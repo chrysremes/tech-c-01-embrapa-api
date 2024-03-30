@@ -17,8 +17,8 @@ app = FastAPI()
 def root():
     return {"main":"page"}
 
-@app.get('/get/return_type={return_type}')
-def read_data(return_type:DataTypeReturn, option_id:str, suboption_id:str | None = None):
+@app.get('/get/return_type={return_type}/option={option_id}')
+def read_data(return_type: DataTypeReturn, option_id: str, suboption_id: str | None = None):
     embrapa = EmbrapaURL(option=option_id,suboption=suboption_id)
     embrapa.request_and_save_to_df()
     if return_type is DataTypeReturn.url:
