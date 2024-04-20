@@ -56,7 +56,7 @@ def read_data(
     year: int, 
     option_id: str, 
     suboption_id: str,
-    current_user: Annotated[User, Depends(get_current_active_user)]
+    # current_user: Annotated[User, Depends(get_current_active_user)]
     )->dict:
     if suboption_id == "None":
         suboption_id=None
