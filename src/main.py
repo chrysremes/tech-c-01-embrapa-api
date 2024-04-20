@@ -1,31 +1,19 @@
 from datetime import timedelta
 from typing import Annotated, Any
 
-import json
-
 import uvicorn
-from fastapi import FastAPI, HTTPException, responses, status, Depends
+from fastapi import FastAPI, Path, HTTPException, responses, status, Depends
 
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
-from pydantic import BaseModel
-from enum import Enum
-
 from EmbrapaWebScrap import EmbrapaWebScrap
+from EmbrapaDefs import DataOption, DataSubOption, DataTypeReturn
 
-from auth import Token, User, authenticate_user, create_access_token, get_current_active_user, read_users_db
+from auth import Token, User, authenticate_user, create_access_token, read_users_db
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
-
-class DataTypeReturn(str, Enum):
-    url = "url"
-    df_str = "df_str"
-    df_csv = "df_csv"
-    df_dict = "df_dict"
-    df_json = "df_json"
-    df_html_tab = "df_html_tab"
 
 app = FastAPI()
 
@@ -53,12 +41,12 @@ async def login_for_access_token(
 @app.get('/get/return_type={return_type}/year={year}/option={option_id}/suboption={suboption_id}')
 def read_data(
     return_type: DataTypeReturn, 
-    year: int, 
-    option_id: str, 
-    suboption_id: str,
+    year: Annotated[int, Path(title="The ID of the item to get", ge=1970, le=2022)], 
+    option_id: DataOption, 
+    suboption_id: DataSubOption,
     # current_user: Annotated[User, Depends(get_current_active_user)]
     )->dict:
-    if suboption_id == "None":
+    if suboption_id is DataSubOption.StrNone:
         suboption_id=None
     embrapa = EmbrapaWebScrap(year=year, option=option_id, suboption=suboption_id)
     embrapa.request_and_save_to_df()

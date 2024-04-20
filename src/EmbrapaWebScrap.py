@@ -4,46 +4,7 @@ import pandas as pd
 from io import StringIO
 from fastapi import HTTPException
 
-class EmbrapaPages():
-
-    URL_INDEX = "http://vitibrasil.cnpuv.embrapa.br/index.php?"
-
-    REQ_YEAR = "ano="
-    REQ_OPTION = "opcao=opt_"
-    REQ_SUBOPTION = "subopcao=subopt_"
-
-    START_YEAR = 1970
-    LAST_YEAR = 2022
-
-    OPTIONS_DICT = {
-        "producao" : "02",
-        "processamento" : "03",
-        "comercializacao" : "04",
-        "importacao" : "05",
-        "exportacao" : "06"
-    }
-
-    SUBOPTIONS_DICT = {
-        "processamento" : {
-            "viniferas" : "01",
-            "americanas_e_hibridas" : "02",
-            "uvas_de_mesa" : "03",
-            "sem_classificacao" : "04"
-        },
-        "importacao" : {
-            "vinhos_de_mesa" : "01",
-            "espumantes" : "02",
-            "uvas_frescas" : "03",
-            "uvas_passas" : "04",
-            "suco_de_uva" : "05"
-        },
-        "exportacao" : {
-            "vinhos_de_mesa" : "01",
-            "espumantes" : "02",
-            "uvas_frescas" : "03",
-            "suco_de_uva" : "04"
-        }
-    }
+from EmbrapaDefs import EmbrapaPages
 
 class EmbrapaWebScrap(EmbrapaPages):
 
