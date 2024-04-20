@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from EmbrapaWebScrap import EmbrapaWebScrap
 from EmbrapaDefs import DataOption, DataSubOption, DataTypeReturn, EmbrapaPages
 
-from auth import Token, User, authenticate_user, create_access_token, read_users_db
+from auth.Auth import Token, User, authenticate_user, create_access_token, read_users_db, get_current_active_user
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -57,7 +57,7 @@ def read_data(
         year: Annotated[int, Path(title="The ID of the item to get", ge=EmbrapaPages.START_YEAR, le=EmbrapaPages.LAST_YEAR)], 
         option_id: DataOption, 
         suboption_id: DataSubOption,
-        # current_user: Annotated[User, Depends(get_current_active_user)]
+        current_user: Annotated[User, Depends(get_current_active_user)]
     )->dict:
     if suboption_id is DataSubOption.StrNone:
         suboption_id=None
