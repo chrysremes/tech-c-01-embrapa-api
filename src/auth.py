@@ -37,12 +37,6 @@ class UserInDB(User):
 def read_users_db()->Any:
     with open('fake_users_db.json') as f:
         fake_users_db = json.load(f)
-        if fake_users_db["disabled"] == "False":
-            fake_users_db["disabled"] == False
-        elif fake_users_db["disabled"] == "True":
-            fake_users_db["disabled"] == True
-        else:
-            pass # do nothing
         return fake_users_db
 
 def verify_password(plain_password, hashed_password):
