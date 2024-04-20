@@ -40,7 +40,7 @@ async def login_for_access_token(
 
 @app.get('/get/year={year}/option={option_id}/suboption={suboption_id}', tags="Embrapa")
 def read_data(
-        year: Annotated[int, Path(title="The ID of the item to get", ge=1970, le=2022)], 
+        year: Annotated[int, Path(title="The ID of the item to get", ge=EmbrapaPages.START_YEAR, le=EmbrapaPages.LAST_YEAR)], 
         option_id: DataOption, 
         suboption_id: DataSubOption,
         # current_user: Annotated[User, Depends(get_current_active_user)]
