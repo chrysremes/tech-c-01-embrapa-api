@@ -38,7 +38,7 @@ async def login_for_access_token(
     )
     return Token(access_token=access_token, token_type="bearer")
 
-@app.get('/get/year={year}/option={option_id}/suboption={suboption_id}', tags="Embrapa")
+@app.get('/get/year={year}/option={option_id}/suboption={suboption_id}', tags=["Embrapa"])
 def read_data(
         year: Annotated[int, Path(title="The ID of the item to get", ge=EmbrapaPages.START_YEAR, le=EmbrapaPages.LAST_YEAR)], 
         option_id: DataOption, 
@@ -51,7 +51,7 @@ def read_data(
     embrapa.request_and_save_to_df()
     return {"df-dict" : embrapa.df.to_dict()}
 
-@app.get('/get/return_type={return_type}/year={year}/option={option_id}/suboption={suboption_id}', tags="Embrapa")
+@app.get('/get/return_type={return_type}/year={year}/option={option_id}/suboption={suboption_id}', tags=["Embrapa"])
 def read_data(
         return_type: DataTypeReturn, 
         year: Annotated[int, Path(title="The ID of the item to get", ge=EmbrapaPages.START_YEAR, le=EmbrapaPages.LAST_YEAR)], 
