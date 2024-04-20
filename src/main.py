@@ -5,6 +5,7 @@ from auth.Auth import User, get_current_active_user
 import uvicorn
 from fastapi import FastAPI, Path, responses, Depends
 
+from EmbrapaTreatData import EmbrapaData
 from EmbrapaWebScrap import EmbrapaWebScrap
 from EmbrapaDefs import DataOption, DataSubOption, DataTypeReturn, EmbrapaPages
 
@@ -15,8 +16,8 @@ app.include_router(post_token.router)
 def root():
     return {"root":"page"}
 
-@app.get('/get/year={year}/option={option_id}/suboption={suboption_id}', tags=["Embrapa"])
-def read_data(
+@app.get('/read_raw_dict/year={year}/option={option_id}/suboption={suboption_id}', tags=["Embrapa Raw"])
+def read_raw_data_dict(
         year: Annotated[int, Path(title="The ID of the item to get", ge=EmbrapaPages.START_YEAR, le=EmbrapaPages.LAST_YEAR)], 
         option_id: DataOption, 
         suboption_id: DataSubOption,
@@ -28,8 +29,8 @@ def read_data(
     embrapa.request_and_save_to_df()
     return {"df-dict" : embrapa.df.to_dict()}
 
-@app.get('/get/return_type={return_type}/year={year}/option={option_id}/suboption={suboption_id}', tags=["Embrapa"])
-def read_data(
+@app.get('/read_raw_any/return_type={return_type}/year={year}/option={option_id}/suboption={suboption_id}', tags=["Embrapa Raw"])
+def read_raw_data_protected(
         return_type: DataTypeReturn, 
         year: Annotated[int, Path(title="The ID of the item to get", ge=EmbrapaPages.START_YEAR, le=EmbrapaPages.LAST_YEAR)], 
         option_id: DataOption, 
@@ -56,8 +57,27 @@ def read_data(
         enums = [enum0.value for enum0 in DataTypeReturn]
         return {"error": "Incorrect Return Type. Choose an option from {enums}"}
 
+
+@app.get('/read_clean_data/year={year}/option={option_id}/suboption={suboption_id}', tags=["Embrapa Clean"])
+def read_clean_data(
+        year: Annotated[int, Path(title="The ID of the item to get", ge=EmbrapaPages.START_YEAR, le=EmbrapaPages.LAST_YEAR)], 
+        option_id: DataOption, 
+        suboption_id: DataSubOption,
+        # current_user: Annotated[User, Depends(get_current_active_user)]
+    )->dict:
+    
+    if suboption_id is DataSubOption.StrNone:
+        suboption_id=None
+    
+    embrapa_scrap = EmbrapaWebScrap(year=year, option=option_id, suboption=suboption_id)
+    embrapa_scrap.request_and_save_to_df()
+
+    embrapa_data = EmbrapaData(embrapa_scrap.df, year=year)
+    embrapa_data.make_dict_producao()
+    print(embrapa_data.dict_producao_clean)
+
+    return embrapa_data.dict_producao_clean
+
+
 if __name__ == "__main__":
     uvicorn.run(app,host="127.0.0.1",port=8000)
-
-
-

@@ -81,5 +81,6 @@ class EmbrapaWebScrap(EmbrapaPages):
         self.url_request = self.parse_url()
         print(self.url_request)
         self.df = self.request_to_df(self.url_request)
-        print(self.df.head())
+        #print(self.df.head())
+        print("###### End of WebScrapping ##########")
 
