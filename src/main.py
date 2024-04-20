@@ -50,28 +50,13 @@ async def login_for_access_token(
     )
     return Token(access_token=access_token, token_type="bearer")
 
-@app.get("/users/me/", response_model=User)
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return current_user
-
-@app.get("/users/me/items/")
-async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return [{"item_id": "Foo", "owner": current_user.username}]
-
-@app.get('/items/')
-async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
-    return {"token" : token}
-
 @app.get('/get/return_type={return_type}/year={year}/option={option_id}/suboption={suboption_id}')
 def read_data(
     return_type: DataTypeReturn, 
     year: int, 
     option_id: str, 
-    suboption_id: str
+    suboption_id: str,
+    current_user: Annotated[User, Depends(get_current_active_user)]
     )->dict:
     if suboption_id == "None":
         suboption_id=None
