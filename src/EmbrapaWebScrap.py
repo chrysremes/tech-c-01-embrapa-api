@@ -47,10 +47,10 @@ class EmbrapaPages():
 
 class EmbrapaWebScrap(EmbrapaPages):
 
-    def __init__(self, year:int, option:str, suboption:str|None=None)->None:
+    def __init__(self, year:int, option:str, suboption:str)->None:
         self.year = year
         self.option:str = option
-        self.suboption:str|None = suboption
+        self.suboption:str = suboption
         self.url_request:str = None
         self.df:pd.DataFrame = None
         self.df_as_dict:dict = None

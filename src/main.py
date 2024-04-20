@@ -27,7 +27,6 @@ class DataTypeReturn(str, Enum):
     df_json = "df_json"
     df_html_tab = "df_html_tab"
 
-
 app = FastAPI()
 
 @app.get('/')
@@ -67,9 +66,16 @@ async def read_own_items(
 async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
     return {"token" : token}
 
-@app.get('/get/return_type={return_type}/year={year}/option={option_id}')
-def read_data(return_type: DataTypeReturn, year: int, option_id: str, suboption_id: str | None = None):
-    embrapa = EmbrapaWebScrap(year=year, option=option_id,suboption=suboption_id)
+@app.get('/get/return_type={return_type}/year={year}/option={option_id}/suboption={suboption_id}')
+def read_data(
+    return_type: DataTypeReturn, 
+    year: int, 
+    option_id: str, 
+    suboption_id: str
+    )->dict:
+    if suboption_id == "None":
+        suboption_id=None
+    embrapa = EmbrapaWebScrap(year=year, option=option_id, suboption=suboption_id)
     embrapa.request_and_save_to_df()
     if return_type is DataTypeReturn.url:
         return {"url" : embrapa.url_request}
