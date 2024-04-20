@@ -45,7 +45,7 @@ class EmbrapaPages():
         }
     }
 
-class EmbrapaURL(EmbrapaPages):
+class EmbrapaWebScrap(EmbrapaPages):
 
     def __init__(self, year:int, option:str, suboption:str|None=None)->None:
         self.year = year

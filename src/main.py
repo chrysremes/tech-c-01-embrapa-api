@@ -11,7 +11,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from pydantic import BaseModel
 from enum import Enum
 
-from EmbrapaURL import EmbrapaURL
+from EmbrapaWebScrap import EmbrapaWebScrap
 
 from auth import Token, User, authenticate_user, create_access_token, get_current_active_user, read_users_db
 
@@ -71,7 +71,7 @@ async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
 
 @app.get('/get/return_type={return_type}/year={year}/option={option_id}')
 def read_data(return_type: DataTypeReturn, year: int, option_id: str, suboption_id: str | None = None):
-    embrapa = EmbrapaURL(year=year, option=option_id,suboption=suboption_id)
+    embrapa = EmbrapaWebScrap(year=year, option=option_id,suboption=suboption_id)
     embrapa.request_and_save_to_df()
     if return_type is DataTypeReturn.url:
         return {"url" : embrapa.url_request}
