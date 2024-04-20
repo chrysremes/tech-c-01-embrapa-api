@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
+from typing import Annotated, Any
+
+import json
 
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
@@ -16,16 +18,6 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
-
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -41,6 +33,17 @@ class User(BaseModel):
 
 class UserInDB(User):
     hashed_password: str
+
+def read_users_db()->Any:
+    with open('fake_users_db.json') as f:
+        fake_users_db = json.load(f)
+        if fake_users_db["disabled"] == "False":
+            fake_users_db["disabled"] == False
+        elif fake_users_db["disabled"] == "True":
+            fake_users_db["disabled"] == True
+        else:
+            pass # do nothing
+        return fake_users_db
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -92,7 +95,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
+    user = get_user(read_users_db(), username=token_data.username)
     if user is None:
         raise credentials_exception
     return user

@@ -1,5 +1,7 @@
 from datetime import timedelta
-from typing import Annotated
+from typing import Annotated, Any
+
+import json
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, responses, status, Depends
@@ -11,21 +13,13 @@ from enum import Enum
 
 from EmbrapaURL import EmbrapaURL
 
-from auth import Token, User, authenticate_user, create_access_token, get_current_active_user
+from auth import Token, User, authenticate_user, create_access_token, get_current_active_user, read_users_db
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
+
 
 class DataTypeReturn(str, Enum):
     url = "url"
@@ -40,13 +34,13 @@ app = FastAPI()
 
 @app.get('/')
 def root():
-    return {"main":"page"}
+    return {"root":"page"}
 
 @app.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(read_users_db(), form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -75,9 +69,9 @@ async def read_own_items(
 async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
     return {"token" : token}
 
-@app.get('/get/return_type={return_type}/option={option_id}')
-def read_data(return_type: DataTypeReturn, option_id: str, suboption_id: str | None = None):
-    embrapa = EmbrapaURL(option=option_id,suboption=suboption_id)
+@app.get('/get/return_type={return_type}/year={year}/option={option_id}')
+def read_data(return_type: DataTypeReturn, year: int, option_id: str, suboption_id: str | None = None):
+    embrapa = EmbrapaURL(year=year, option=option_id,suboption=suboption_id)
     embrapa.request_and_save_to_df()
     if return_type is DataTypeReturn.url:
         return {"url" : embrapa.url_request}
