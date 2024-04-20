@@ -7,7 +7,7 @@ from fastapi import FastAPI, Path, HTTPException, responses, status, Depends
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
 from EmbrapaWebScrap import EmbrapaWebScrap
-from EmbrapaDefs import DataOption, DataSubOption, DataTypeReturn
+from EmbrapaDefs import DataOption, DataSubOption, DataTypeReturn, EmbrapaPages
 
 from auth import Token, User, authenticate_user, create_access_token, read_users_db
 
@@ -21,7 +21,7 @@ app = FastAPI()
 def root():
     return {"root":"page"}
 
-@app.post("/token")
+@app.post("/token", tags=["auth"])
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
@@ -38,13 +38,26 @@ async def login_for_access_token(
     )
     return Token(access_token=access_token, token_type="bearer")
 
-@app.get('/get/return_type={return_type}/year={year}/option={option_id}/suboption={suboption_id}')
+@app.get('/get/year={year}/option={option_id}/suboption={suboption_id}', tags="Embrapa")
 def read_data(
-    return_type: DataTypeReturn, 
-    year: Annotated[int, Path(title="The ID of the item to get", ge=1970, le=2022)], 
-    option_id: DataOption, 
-    suboption_id: DataSubOption,
-    # current_user: Annotated[User, Depends(get_current_active_user)]
+        year: Annotated[int, Path(title="The ID of the item to get", ge=1970, le=2022)], 
+        option_id: DataOption, 
+        suboption_id: DataSubOption,
+        # current_user: Annotated[User, Depends(get_current_active_user)]
+    )->dict:
+    if suboption_id is DataSubOption.StrNone:
+        suboption_id=None
+    embrapa = EmbrapaWebScrap(year=year, option=option_id, suboption=suboption_id)
+    embrapa.request_and_save_to_df()
+    return {"df-dict" : embrapa.df.to_dict()}
+
+@app.get('/get/return_type={return_type}/year={year}/option={option_id}/suboption={suboption_id}', tags="Embrapa")
+def read_data(
+        return_type: DataTypeReturn, 
+        year: Annotated[int, Path(title="The ID of the item to get", ge=EmbrapaPages.START_YEAR, le=EmbrapaPages.LAST_YEAR)], 
+        option_id: DataOption, 
+        suboption_id: DataSubOption,
+        # current_user: Annotated[User, Depends(get_current_active_user)]
     )->dict:
     if suboption_id is DataSubOption.StrNone:
         suboption_id=None
