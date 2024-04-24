@@ -21,7 +21,7 @@ def read_raw_data_dict(
         year: Annotated[int, Path(title="The ID of the item to get", ge=EmbrapaPages.START_YEAR, le=EmbrapaPages.LAST_YEAR)], 
         option_id: DataOption, 
         suboption_id: DataSubOption,
-        # current_user: Annotated[User, Depends(get_current_active_user)]
+        current_user: Annotated[User, Depends(get_current_active_user)]
     )->dict:
     if suboption_id is DataSubOption.StrNone:
         suboption_id=None
