@@ -14,7 +14,6 @@ class EmbrapaData(EmbrapaPages):
         self.col_value_name:list[str] = []
         self.data_main_index_name = "data_"+self.option+"_"+self.suboption
         for index in range(1,len(EmbrapaPages.TABLE_HEADERS[option][suboption])):
-            print([index, len(EmbrapaPages.TABLE_HEADERS[option][suboption])])
             self.col_value_name.append(EmbrapaPages.TABLE_HEADERS[option][suboption][index])
         self.dict_cleaned:dict[str:list] = {self.data_main_index_name : []}
     
@@ -40,10 +39,10 @@ class EmbrapaData(EmbrapaPages):
     def get_current_values_list(self,current_col_value_name:list[str]):
         current_quantity:list[int] = []
         for idx in range(0,len(self.col_value_name)):
-            if self.check_hifen_value_instead_numeric(current_col_value_name[idx]):
+            if self.check_hifen_value_instead_numeric(current_col_value_name.iloc[idx]):
                 current_quantity.append(EmbrapaPages.VALUE_TO_REPLACE_HIFEN)
             else:
-                current_quantity.append(self.format_numeric_value(current_col_value_name[idx]))
+                current_quantity.append(self.format_numeric_value(current_col_value_name.iloc[idx]))
         return current_quantity
 
     def make_new_entry(self, current_category:int, key:str, value:list[int]):
