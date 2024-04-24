@@ -41,7 +41,7 @@ class EmbrapaData(EmbrapaPages):
         current_quantity:list[int] = []
         for idx in range(0,len(self.col_value_name)):
             if self.check_hifen_value_instead_numeric(current_col_value_name[idx]):
-                current_quantity.append(0)
+                current_quantity.append(EmbrapaPages.VALUE_TO_REPLACE_HIFEN)
             else:
                 current_quantity.append(self.format_numeric_value(current_col_value_name[idx]))
         return current_quantity

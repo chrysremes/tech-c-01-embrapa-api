@@ -12,6 +12,8 @@ class EmbrapaPages():
     START_YEAR = 1970
     LAST_YEAR = 2022
 
+    VALUE_TO_REPLACE_HIFEN = None
+
     LIT_PRODUTO = "Produto"
     LIT_QUANTIDADE_L = "Quantidade (L.)"
     LIT_CULTIVAR = "Cultivar"
