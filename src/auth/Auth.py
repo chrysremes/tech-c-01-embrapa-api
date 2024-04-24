@@ -12,6 +12,7 @@ from pydantic import BaseModel
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
+DB_FILE = "./auth/fake_users_db.json"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -34,7 +35,7 @@ class UserInDB(User):
     hashed_password: str
 
 def read_users_db()->Any:
-    with open('fake_users_db.json') as f:
+    with open(DB_FILE) as f:
         fake_users_db = json.load(f)
         return fake_users_db
 
