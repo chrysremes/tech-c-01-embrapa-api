@@ -49,7 +49,7 @@ class EmbrapaData(EmbrapaPages):
     def make_new_entry(self, current_category:int, key:str, value:list[int]):
         return ({
             'option' : self.option,
-            'suboption' : self.suboption,
+            'suboption' : None if self.suboption == "" else self.suboption,
             'col_key_name' : self.col_key_name,
             'col_value_name' : self.col_value_name,
             'category' : current_category,
