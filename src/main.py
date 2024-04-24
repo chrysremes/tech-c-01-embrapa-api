@@ -72,11 +72,11 @@ def read_clean_data(
     embrapa_scrap = EmbrapaWebScrap(year=year, option=option_id, suboption=suboption_id)
     embrapa_scrap.request_and_save_to_df()
 
-    embrapa_data = EmbrapaData(embrapa_scrap.df, year=year)
-    embrapa_data.make_dict_producao()
-    print(embrapa_data.dict_producao_clean)
+    embrapa_data = EmbrapaData(embrapa_scrap.df, year=year, option=option_id, suboption=suboption_id)
+    cleaned_dict = embrapa_data.get_cleaned_data_dict()
+    print(cleaned_dict)
 
-    return embrapa_data.dict_producao_clean
+    return cleaned_dict
 
 
 if __name__ == "__main__":

@@ -12,6 +12,14 @@ class EmbrapaPages():
     START_YEAR = 1970
     LAST_YEAR = 2022
 
+    LIT_PRODUTO = "Produto"
+    LIT_QUANTIDADE_L = "Quantidade (L.)"
+    LIT_CULTIVAR = "Cultivar"
+    LIT_QUANTIDADE_KG = "Quantidade (Kg)"
+    LIT_SEM_DEF = "Sem definição"
+    LIT_PAISES = "Países"
+    LIT_VALOR = "Valor (US$)"
+
     OPTIONS_DICT = {
         "producao" : "02",
         "processamento" : "03",
@@ -39,6 +47,34 @@ class EmbrapaPages():
             "espumantes" : "02",
             "uvas_frescas" : "03",
             "suco_de_uva" : "04"
+        }
+    }
+
+    TABLE_HEADERS = {
+        "producao" : {
+            None : [LIT_PRODUTO, LIT_QUANTIDADE_L]
+        },
+        "processamento" : {
+            "viniferas" : [LIT_CULTIVAR, LIT_QUANTIDADE_KG],
+            "americanas_e_hibridas" : [LIT_CULTIVAR, LIT_QUANTIDADE_KG],
+            "uvas_de_mesa" : [LIT_CULTIVAR, LIT_QUANTIDADE_KG],
+            "sem_classificacao" : [LIT_SEM_DEF, LIT_QUANTIDADE_KG]
+        },
+        "comercializacao" : {
+            None : [LIT_PRODUTO, LIT_QUANTIDADE_L]
+        },
+        "importacao" : {
+            "vinhos_de_mesa" : [LIT_PAISES, LIT_QUANTIDADE_KG, LIT_VALOR],
+            "espumantes" : [LIT_PAISES, LIT_QUANTIDADE_KG, LIT_VALOR],
+            "uvas_frescas" : [LIT_PAISES, LIT_QUANTIDADE_KG, LIT_VALOR],
+            "uvas_passas" : [LIT_PAISES, LIT_QUANTIDADE_KG, LIT_VALOR],
+            "suco_de_uva" : [LIT_PAISES, LIT_QUANTIDADE_KG, LIT_VALOR],
+        },
+        "exportacao" : {
+            "vinhos_de_mesa" : [LIT_PAISES, LIT_QUANTIDADE_KG, LIT_VALOR],
+            "espumantes" : [LIT_PAISES, LIT_QUANTIDADE_KG, LIT_VALOR],
+            "uvas_frescas" : [LIT_PAISES, LIT_QUANTIDADE_KG, LIT_VALOR],
+            "suco_de_uva" : [LIT_PAISES, LIT_QUANTIDADE_KG, LIT_VALOR],
         }
     }
 
@@ -72,3 +108,4 @@ class DataTypeReturn(str, Enum):
     df_dict = "df_dict"
     df_json = "df_json"
     df_html_tab = "df_html_tab"
+
