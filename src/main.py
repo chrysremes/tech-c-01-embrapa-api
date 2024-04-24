@@ -74,8 +74,7 @@ def read_clean_data(
 
     embrapa_data = EmbrapaData(embrapa_scrap.df, year=year, option=option_id, suboption=suboption_id)
     cleaned_dict = embrapa_data.get_cleaned_data_dict()
-    print(cleaned_dict)
-
+    print("####### Clean Data Succesfully Retrieved #########")
     return cleaned_dict
 
 

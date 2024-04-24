@@ -37,6 +37,15 @@ class EmbrapaData(EmbrapaPages):
     def format_numeric_value(self,value):
         return int(re.sub(r'[^\w]','',value))
     
+    def get_current_values_list(self,current_col_value_name:list[str]):
+        current_quantity:list[int] = []
+        for idx in range(0,len(self.col_value_name)):
+            if self.check_hifen_value_instead_numeric(current_col_value_name[idx]):
+                current_quantity.append(0)
+            else:
+                current_quantity.append(self.format_numeric_value(current_col_value_name[idx]))
+        return current_quantity
+
     def make_new_entry(self, current_category:int, key:str, value:list[int]):
         return ({
             'option' : self.option,
@@ -49,22 +58,19 @@ class EmbrapaData(EmbrapaPages):
             'ano' : self.year
         })
 
-    def get_cleaned_data_dict(self):
-        self.remove_total(self.define_index_total())
-        data_list:list = []
+    def get_full_data_list(self):
+        full_data_list:list = []
         row:dict[str,str]
         current_category:str = ''
         for _, row in self.df.iterrows():
             if self.check_if_category(row[self.col_key_name]):
                 current_category = self.format_category(row[self.col_key_name])
             else:
-                current_quantity:list[int] = []
-                for idx in range(0,len(self.col_value_name)):
-                    if self.check_hifen_value_instead_numeric(row[self.col_value_name[idx]]):
-                        current_quantity.append(0)
-                    else:
-                        current_quantity.append(self.format_numeric_value(row[self.col_value_name[idx]]))
-                data_list.append(self.make_new_entry(current_category, self.format_category(row[self.col_key_name]), current_quantity))
-        self.dict_cleaned.update({self.data_main_index_name : data_list})
+                current_quantity = self.get_current_values_list(row[self.col_value_name])
+                full_data_list.append(self.make_new_entry(current_category, self.format_category(row[self.col_key_name]), current_quantity))
+        return full_data_list
+
+    def get_cleaned_data_dict(self):
+        self.remove_total(self.define_index_total())
+        self.dict_cleaned.update({self.data_main_index_name : self.get_full_data_list()})
         return self.dict_cleaned
-    
