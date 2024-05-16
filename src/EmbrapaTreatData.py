@@ -47,7 +47,7 @@ class EmbrapaData(EmbrapaPages):
         """
         return self.df[self.df[self.col_key_name]=="Total"].index
 
-    def remove_total(self, index_total)->None:
+    def remove_total(self, index_total:pd.Index)->None:
         """
         Drop the row "Total" (can be infered later by sum, for example).
         Having it may complicate data treatment, so it is removed for simplicity.
@@ -68,7 +68,7 @@ class EmbrapaData(EmbrapaPages):
         """
         return value.lower()
 
-    def check_hifen_value_instead_numeric(self,value)->bool:
+    def check_hifen_value_instead_numeric(self,value:str)->bool:
         """
         When Scraping the page, some NULL values are filled with 
         either '-' or '*'. This method checks for them.
@@ -78,7 +78,7 @@ class EmbrapaData(EmbrapaPages):
         else:
             return False
     
-    def format_numeric_value(self,value)->int:
+    def format_numeric_value(self,value:str)->int:
         """
         All numeric raw values come as a string with dots, like: 12.345.678
         This method removes non-numeric values and returns the result as an int.
